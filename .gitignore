@@ -3,3 +3,4 @@ solutions
 domashka_credits.json
 __pycache__
 telegram_token.py
+telegram_token_kids.py

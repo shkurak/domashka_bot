@@ -6,14 +6,14 @@ from gspread.exceptions import CellNotFound
 from test_system import run_code_on_tests
 
 from aiogram import Bot, Dispatcher, executor, types
-from telegram_token import API_TOKEN
+from telegram_token_kids import API_TOKEN
 
 
 class Table:
     def __init__(self, filename='domashka_credits.json'):
         gc = gspread.service_account(filename='domashka_credits.json')
         table = gc.open("Domashka_results")
-        self.sheet =table.worksheets()[0]
+        self.sheet =table.worksheets()[1]
         
     def find_user(self, username: str):
         try:
@@ -24,7 +24,6 @@ class Table:
     def put_mark(self, task:str, user_row: str, mark: int):
         try:
             col = self.sheet.find(task, in_row=1).col
-#             row = self.sheet.find(user, in_column=1).row
             return self.sheet.update_cell(user_row, col, mark)['updatedCells'] == 1
         except Exception:
             pass
@@ -36,7 +35,7 @@ class Table:
 
 table = Table()
 # Configure logging
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.INFO) 
 
 # Initialize bot and dispatcher
 bot = Bot(token=API_TOKEN)
