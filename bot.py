@@ -17,7 +17,7 @@ class Table:
         
     def find_user(self, username: str):
         try:
-            return table.sheet.find(username, in_column=1).row
+            return table.sheet.find(username, in_column=2).row
         except CellNotFound:
             return -1
         
@@ -91,6 +91,9 @@ async def document_recive(message: types.Message):
     await message.answer(f"твій розв'язок пройшов {tests_pass} тестів з {tests_num}")
     if tests_pass != tests_num:
         await message.answer(f"твоя програма видала таку помилку\n{error_message}")
+    
+    #check for deadline
+
     mark = int(tests_pass/tests_num * 10)
     await message.answer(f"ти отримав {mark} балів")
 
