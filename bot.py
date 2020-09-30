@@ -17,13 +17,13 @@ class Table:
         
     def find_user(self, username: str):
         try:
-            return table.sheet.find(username, in_column=2).row
+            return table.sheet.find(username, in_column=1).row
         except CellNotFound:
             return -1
         
     def put_mark(self, task:str, user_row: str, mark: int):
         try:
-            col = self.sheet.find(task, in_row=1).col
+            col = self.sheet.find(task, in_row=2).col
 #             row = self.sheet.find(user, in_column=1).row
             return self.sheet.update_cell(user_row, col, mark)['updatedCells'] == 1
         except Exception:
