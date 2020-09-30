@@ -121,9 +121,9 @@ async def document_recive(message: types.Message):
             await message.answer(f"ти пропустив м'ягкий дедлайн і отримуєш половину балів, тобто {mark} балів")
         else:
             await message.answer(f"ти отримав {mark} балів")
-
-    table.put_mark(task_col, user_row, mark)
-    table.sort_by()
+        
+        table.put_mark(task_col, user_row, mark)
+        table.sort_by()
 
 if __name__ == '__main__':
     executor.start_polling(dp, skip_updates=True)
