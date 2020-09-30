@@ -9,6 +9,24 @@ from aiogram import Bot, Dispatcher, executor, types
 from telegram_token import API_TOKEN
 
 
+deadline_row = 1
+
+def hours2secs(hours):
+    return hours * 60 * 60
+
+def days2seconds(days):
+    return hours2secs(days*24)
+
+def check_dealine(deadline, time_zone_correction = 3, softdealine_days = 7):
+    deadline_secs = time.mktime(time.strptime(deadline, "%d.%m.%y %H:%M"))
+    now_secs = time.time() + hours2secs(time_zone_correction)
+    if now_secs < deadline_secs:
+        return 1
+    if now_secs < deadline_secs + days2seconds(softdealine_days):
+        return 0.5
+    return 0
+
+
 class Table:
     def __init__(self, filename='domashka_credits.json'):
         gc = gspread.service_account(filename='domashka_credits.json')
@@ -21,11 +39,10 @@ class Table:
         except CellNotFound:
             return -1
         
-    def put_mark(self, task:str, user_row: str, mark: int):
+    def put_mark(self, task_col:str, user_row: str, mark: int):
         try:
-            col = self.sheet.find(task, in_row=2).col
 #             row = self.sheet.find(user, in_column=1).row
-            return self.sheet.update_cell(user_row, col, mark)['updatedCells'] == 1
+            return self.sheet.update_cell(user_row, task_col, mark)['updatedCells'] == 1
         except Exception:
             pass
         return False
@@ -93,11 +110,19 @@ async def document_recive(message: types.Message):
         await message.answer(f"твоя програма видала таку помилку\n{error_message}")
     
     #check for deadline
+    task_col = table.sheet.find(taskname, in_row=2).col
+    deadline = table.sheet.cell(deadline_row, task_col).value
+    multip = check_dealine(deadline)
+    if multip == 0:
+        await message.answer(f"ти пропустив жорсткий дедлайн і більше не можеш отримати балів за цю задачу")
+    else:
+        mark = int(tests_pass/tests_num * 10 * multip)
+        if multip == 0.5 and mark != 0:
+            await message.answer(f"ти пропустив м'ягкий дедлайн і отримуєш половину балів, тобто {mark} балів")
+        else:
+            await message.answer(f"ти отримав {mark} балів")
 
-    mark = int(tests_pass/tests_num * 10)
-    await message.answer(f"ти отримав {mark} балів")
-
-    table.put_mark(taskname, user_row, mark)
+    table.put_mark(task_col, user_row, mark)
     table.sort_by()
 
 if __name__ == '__main__':
