@@ -44,13 +44,18 @@ def run_code_on_tests(code_file, task):
         if stderr != '':
             return i, len(tests), stderr
         with open(test_file.replace("input", "output"), "r") as reference_file:
-            reference = reference_file.read()
-        if reference != stdout:
+            reference = reference_file.read().strip(" ").strip("\n")
+        if reference != stdout.strip(" ").strip("\n"):
             return i, len(tests), 'Wrong answer!'
     
     return len(tests), len(tests), ''
 
 
 if __name__== '__main__':
-    result = run_code_on_tests('tests/hello_world/hello_world.py', "hello_world")
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument('task', type=str)
+    args = parser.parse_args()
+    task = args.task
+    result = run_code_on_tests(f'tests/{task}/{task}.py', task)
     print(result)
