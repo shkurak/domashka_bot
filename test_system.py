@@ -50,10 +50,10 @@ def run_code_on_tests(code_file, task, debug=False):
             if debug:
                 print("reference: ", '"' + reference + '"')
                 print("output: ", '"' + output + '"')
-            message = '<i>Wrong answer!</i>\n'
+            message = '<i>Wrong answer!</i>\n\n'
             if i == 0:
-                message += f'Очікуваний вихід програми: <b>{reference}</b>\n'
-                message += f'Отриманий вихід програми: <b>{output}</b>\n'
+                message += f'очікуваний вихід програми:\n<b>{reference}</b>\n'
+                message += f'отриманий вихід програми:\n<b>{output}</b>\n'
             return i, len(tests), message
     
     return len(tests), len(tests), ''
