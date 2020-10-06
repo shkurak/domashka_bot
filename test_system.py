@@ -43,17 +43,17 @@ def run_code_on_tests(code_file, task, debug=False):
         stdout, stderr = run_code_on_test(code_file, test_file)
         output = stdout.strip(" ").strip("\n")
         if stderr != '':
-            return i, len(tests), stderr
+            return i, len(tests), '<i>' + stderr + '</i>'
         with open(test_file.replace("input", "output"), "r") as reference_file:
             reference = reference_file.read().strip(" ").strip("\n")
         if reference != output:
             if debug:
                 print("reference: ", '"' + reference + '"')
                 print("output: ", '"' + output + '"')
-            message = 'Wrong answer!\n\n'
+            message = '<i>Wrong answer!</i>\n'
             if i == 0:
-                message += f'Очікуваний вихід програми: "{reference}"\n'
-                message += f'Отриманий вихід програми: "{output}"\n'
+                message += f'Очікуваний вихід програми: <b>{reference}</b>\n'
+                message += f'Отриманий вихід програми: <b>{output}</b>\n'
             return i, len(tests), message
     
     return len(tests), len(tests), ''
