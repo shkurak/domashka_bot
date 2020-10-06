@@ -22,9 +22,9 @@ def launch_process(code_file, test_file):
             stdin=input_file,
             stdout=subprocess.PIPE, 
             stderr=subprocess.PIPE, 
-            preexec_fn=limit_virtual_memory)
+            preexec_fn=limit_virtual_memory,
+            text = True)
     return process
-
 
 def run_code_on_test(code_file, test_file):
     process = launch_process(code_file, test_file)
@@ -35,18 +35,26 @@ def run_code_on_test(code_file, test_file):
     except subprocess.TimeoutExpired:
         process.kill()
         return '', 'Time Limit Exception'
-    return stdout.decode('ascii'), stderr.decode('ascii')
+    return stdout, stderr
 
-def run_code_on_tests(code_file, task):
+def run_code_on_tests(code_file, task, debug=False):
     tests = sorted(glob("tests/" + task + "/input/*.txt"))
     for i, test_file in enumerate(tests):
         stdout, stderr = run_code_on_test(code_file, test_file)
+        output = stdout.strip(" ").strip("\n")
         if stderr != '':
             return i, len(tests), stderr
         with open(test_file.replace("input", "output"), "r") as reference_file:
             reference = reference_file.read().strip(" ").strip("\n")
-        if reference != stdout.strip(" ").strip("\n"):
-            return i, len(tests), 'Wrong answer!'
+        if reference != output:
+            if debug:
+                print("reference: ", '"' + reference + '"')
+                print("output: ", '"' + output + '"')
+            message = 'Wrong answer!\n\n'
+            if i == 0:
+                message += f'Очікуваний вихід програми: "{reference}"\n'
+                message += f'Отриманий вихід програми: "{output}"\n'
+            return i, len(tests), message
     
     return len(tests), len(tests), ''
 
@@ -57,5 +65,5 @@ if __name__== '__main__':
     parser.add_argument('task', type=str)
     args = parser.parse_args()
     task = args.task
-    result = run_code_on_tests(f'tests/{task}/{task}.py', task)
+    result = run_code_on_tests(f'tests/{task}/{task}.py', task, debug=True)
     print(result)
