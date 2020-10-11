@@ -107,7 +107,7 @@ async def document_recive(message: types.Message):
     
     await message.answer(f"твій розв'язок пройшов {tests_pass} тестів з {tests_num}")
     if tests_pass != tests_num:
-        await message.answer(f"виникла така помилка:\n{error_message}", parse_mode="Markdown")
+        await message.answer(f"виникла така помилка:<br>{error_message}", parse_mode="Markdown")
     
     #check for deadline
     task_col = table.sheet.find(taskname, in_row=2).col
