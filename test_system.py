@@ -30,7 +30,7 @@ def run_code_on_test(code_file, test_file):
     process = launch_process(code_file, test_file)
     stdout, stderr = '', 'Something went wrong. Contact administrator and report about that.'
     try:
-        process.wait()
+        process.wait(TIME_LIMIT)
         stdout, stderr = process.communicate()
     except subprocess.TimeoutExpired:
         process.kill()
