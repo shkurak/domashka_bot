@@ -43,17 +43,14 @@ def run_code_on_tests(code_file, task, debug=False):
         stdout, stderr = run_code_on_test(code_file, test_file)
         output = stdout.strip(" ").strip("\n")
         if stderr != '':
-            return i, len(tests), '<code>' + stderr + '</code>'
+            return i, len(tests), '```' + stderr + '```'
         with open(test_file.replace("input", "output"), "r") as reference_file:
             reference = reference_file.read().strip(" ").strip("\n")
         if reference != output:
-            if debug:
-                print("reference: ", '"' + reference + '"')
-                print("output: ", '"' + output + '"')
-            message = '<i>Wrong answer!</i>\n\n'
+            message = '```Wrong answer!```\n\n'
             if i == 0:
-                message += f'очікуваний вихід програми:\n<b>{reference}</b>\n'
-                message += f'отриманий вихід програми:\n<b>{output}</b>\n'
+                message += f'очікуваний вихід програми:\n**{reference}**\n'
+                message += f'отриманий вихід програми:\n**{output}**\n'
             return i, len(tests), message
     
     return len(tests), len(tests), ''
@@ -63,7 +60,9 @@ if __name__== '__main__':
     import argparse
     parser = argparse.ArgumentParser()
     parser.add_argument('task', type=str)
+    parser.add_argument('--code', type=str, default=None)
     args = parser.parse_args()
     task = args.task
-    result = run_code_on_tests(f'tests/{task}/{task}.py', task, debug=True)
+    code = f'tests/{task}/{task}.py' if args.code is None else args.code
+    result = run_code_on_tests(code, task, debug=True)
     print(result)
