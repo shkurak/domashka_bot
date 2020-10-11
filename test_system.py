@@ -43,7 +43,7 @@ def run_code_on_tests(code_file, task, debug=False):
         stdout, stderr = run_code_on_test(code_file, test_file)
         output = stdout.strip(" ").strip("\n")
         if stderr != '':
-            return i, len(tests), '<i>' + stderr + '</i>'
+            return i, len(tests), '<code>' + stderr + '</code>'
         with open(test_file.replace("input", "output"), "r") as reference_file:
             reference = reference_file.read().strip(" ").strip("\n")
         if reference != output:
