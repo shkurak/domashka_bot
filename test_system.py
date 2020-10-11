@@ -47,10 +47,10 @@ def run_code_on_tests(code_file, task, debug=False):
         with open(test_file.replace("input", "output"), "r") as reference_file:
             reference = reference_file.read().strip(" ").strip("\n")
         if reference != output:
-            message = '`Wrong answer!`@cr'
+            message = '`Wrong answer!`  \n'
             if i == 0:
-                message += f'очікуваний вихід програми:@cr**{reference}**@cr'
-                message += f'отриманий вихід програми:@cr**{output}**@cr'
+                message += f'очікуваний вихід програми:  \n**{reference}**  \n'
+                message += f'отриманий вихід програми:  \n**{output}**  \n'
             return i, len(tests), message
     
     return len(tests), len(tests), ''
